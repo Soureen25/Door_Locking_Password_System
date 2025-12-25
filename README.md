@@ -1,4 +1,4 @@
-# 
+# Automatic Door Locking Password System using Arduino UNO, LCD 16 x 2 (I2C) and Micro Servo Motor
 
 ##  Introduction
 This project is a **simple yet functional Arduino-based password-controlled door lock system** implemented using a **4×4 matrix keypad**, **16×2 I2C LCD**, and a **micro servo motor**. The system allows a user to enter a predefined 4-character numeric password using the keypad. If the password is correct, the servo motor actuates to simulate automatic door opening; otherwise, access is denied.
