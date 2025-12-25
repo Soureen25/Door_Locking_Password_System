@@ -123,3 +123,7 @@ This project marks my **first GitHub repository** and is developed purely for le
 ###  Notes
 - This is a **prototype-level simulation**, not intended for real-world security use.
 - The key **`D` acts as the Enter key** and must be pressed after entering the password.
+
+https://www.tinkercad.com/things/ePbtsoYaDYD-auto-door-pwd/editel?returnTo=https%3A%2F%2Fwww.tinkercad.com%2Fdashboard%2Fdesigns%2Fcircuits
+
+<img width="1917" height="893" alt="Screenshot 2025-07-30 022932" src="https://github.com/user-attachments/assets/02afd90c-856c-4f38-8f94-6690422dc93b" />
