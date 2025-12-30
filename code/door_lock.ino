@@ -1,0 +1,112 @@
+#include <Wire.h>
+#include <Adafruit_LiquidCrystal.h>
+#include <Servo.h>
+#include <Keypad.h>
+
+// Initialize MCP23008 LCD: address 0x20, 16x2 LCD
+Adafruit_LiquidCrystal lcd(0);
+
+// Servo on pin 12
+Servo servo;
+
+// Keypad config
+const byte ROWS = 4;
+const byte COLS = 4;
+char keys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+byte rowPins[ROWS] = {7, 6, 5, 4};      // Keypad rows → D7-D4
+byte colPins[COLS] = {11, 10, 9, 8};    // Keypad cols → D11-D8
+Keypad kp = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+// Password
+const char correctPass[] = "1234";
+const int passLen = sizeof(correctPass) - 1;
+char enteredPass[passLen + 1] = {0};
+int idx = 0;
+bool doorOpen = false;
+
+void setup() {
+  servo.attach(12);
+  
+  lcd.begin(16, 2);     // Initialize LCD
+  lcd.setBacklight(1);  // Turn on backlight
+
+  lcd.setCursor(0, 0);
+  lcd.print("Enter Password:");
+  lcd.setCursor(0, 1);
+
+  servo.write(0); // Keep door closed
+}
+
+void loop() {
+  char key = kp.getKey();
+  if (!key) return;
+
+  if (doorOpen) {
+    if (key == 'C') {
+      closeDoor();
+    }
+    return;
+  }
+
+  if (key >= '0' && key <= '9' && idx < passLen) {
+    lcd.print('*');
+    enteredPass[idx++] = key;
+  }
+
+  if (key == 'D') {
+    enteredPass[idx] = '\0';
+    if (idx == passLen && strcmp(enteredPass, correctPass) == 0) {
+      openDoor();
+    } else {
+      wrongPassword();
+    }
+  }
+
+  if (key == '#') {
+    resetEntry();
+  }
+}
+
+void openDoor() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Door Opened!");
+  lcd.setCursor(0, 1);
+  lcd.print("Press C to close");
+  servo.write(90);
+  doorOpen = true;
+}
+
+void closeDoor() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Enter Password:");
+  lcd.setCursor(0, 1);
+  servo.write(0);
+  doorOpen = false;
+  resetEntry();
+}
+
+void wrongPassword() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Wrong Password");
+  lcd.setCursor(0, 1);
+  lcd.print("Try Again");
+  delay(2000);
+  resetEntry();
+}
+
+void resetEntry() {
+  idx = 0;
+  memset(enteredPass, 0, sizeof(enteredPass));
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Enter Password:");
+  lcd.setCursor(0, 1);
+}
